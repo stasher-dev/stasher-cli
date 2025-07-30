@@ -1,0 +1,3 @@
+[submodule "worker"]
+	path = worker
+	url = git@github.com:stasher-dev/stasher-worker.git
