@@ -119,7 +119,7 @@ destash "invalid-token"
 ## Security
 
 - **Zero-knowledge**: The server never sees your plaintext secrets
-- **Client-side crypto**: All encryption/decryption happens on your device
+- **Client-side crypto**: All encryption/decryption happens on the client device
 - **Perfect forward secrecy**: Each secret uses a unique encryption key
 - **Automatic expiration**: Secrets are deleted after 10 minutes maximum
 - **Burn-after-read**: Secrets are deleted immediately after being accessed
@@ -136,3 +136,11 @@ MIT
 ## Related
 - [Stasher CLI](https://github.com/johnny-stasher/stasher-cli) - This CLI tool
 - [Stasher Worker](https://github.com/johnny-stasher/stasher-worker) - API backend
+
+## Todo
+
+- [ ] Add `--json` output format for programmatic use
+- [ ] Support custom TTL (time-to-live) settings
+- [ ] Add `--verbose` flag for debugging
+- [ ] Web interface integration
+- [ ] Binary file support with base64 encoding
