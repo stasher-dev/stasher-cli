@@ -35,10 +35,10 @@ export function validateBase64(input: string): boolean {
  */
 export function validateAndParseStashFormat(input: string): StashParseResult {
     if (typeof input !== 'string') {
-        return { success: false, error: 'Token must be a string' };
+        return { success: false, error: 'Stash token must be a string' };
     }
     if (!input.trim()) {
-        return { success: false, error: 'Token is empty' };
+        return { success: false, error: 'Stash token is empty' };
     }
     const match = input.match(STASH_FORMAT_REGEX);
     if (!match) {
@@ -51,7 +51,7 @@ export function validateAndParseStashFormat(input: string): StashParseResult {
         }
         const [id, key] = parts;
         if (!validateUUID(id)) {
-            return { success: false, error: 'Invalid UUID format. Expected: xxxxxxxx-xxxx-4xxx-xxxx-xxxxxxxxxxxx' };
+            return { success: false, error: 'Invalid uuid format' };
         }
         if (!key) {
             return { success: false, error: 'Missing base64 key after colon' };

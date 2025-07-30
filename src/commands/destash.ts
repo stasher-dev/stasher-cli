@@ -19,8 +19,8 @@ export async function runDestash(): Promise<void> {
     .version('1.0.0')
     .addHelpText('after', `
 💡 Examples:
-  stashed destash "a1b2c3d4-e5f6-7890-abcd-ef1234567890:base64key..."
-  npx stashed-cli destash "uuid:base64key"
+   destash "a1b2c3d4-e5f6-7890-abcd-ef1234567890:base64key..."
+   npx destash "uuid:base64key"
     `)
     .parse();
 

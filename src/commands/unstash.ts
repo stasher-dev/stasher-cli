@@ -14,25 +14,25 @@ export async function runUnstash(): Promise<void> {
     .name('stashed')
     .description('Manually delete a one-time secret before it’s accessed')
     .usage('<uuid[:key]>')
-    .argument('<token>', 'Stash UUID or full token in the format uuid:base64key')
+    .argument('<token>', 'Stash uuid or full token in the format uuid:base64key')
     .version('1.0.0')
     .addHelpText('after', `
 💡 Examples:
-  stashed unstash "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
-  stashed unstash "a1b2c3d4-e5f6-7890-abcd-ef1234567890:base64key"
+  unstash "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+  unstash "a1b2c3d4-e5f6-7890-abcd-ef1234567890:base64key"
     `)
     .parse();
 
   const rawInput = program.args[0];
 
   if (!rawInput) {
-    exitWithMessage('No stash token or UUID provided.');
+    exitWithMessage('No stash token or uuid provided.');
   }
 
   // Allow either full token or just the UUID
   const uuid = extractUUID(rawInput);
   if (!uuid || !validateUUID(uuid)) {
-    exitWithMessage('Invalid format. Expected UUID or uuid:base64key');
+    exitWithMessage('Invalid format. Expected uuid or stash token');
   }
 
   try {
@@ -51,7 +51,7 @@ export async function runUnstash(): Promise<void> {
     }
 
     const result = await response.json();
-    console.log(`🗑️  Stash ${result.id} has been permanently deleted.`);
+    console.log(`Stash ${result.id} has been permanently deleted.`);
 
     process.exit(0);
 

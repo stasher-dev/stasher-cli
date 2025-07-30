@@ -24,15 +24,15 @@ export async function runEnstash(): Promise<void> {
 
   program
     .name('stashed')
-    .description('Encrypt and upload a one-time secret to stashed.info')
+    .description('Encrypt and upload a one-time secret to stashed.dev')
     .usage('[secret...]')
     .argument('[secret...]', 'Secret string (defaults to reading from stdin if no arguments)')
     .version('1.0.0')
     .addHelpText('after', `
-🔒 Examples:
-  echo "secret" | stashed enstash
-  stashed enstash "API_KEY=abc123"
-  stashed enstash "my secret"
+  Examples:
+  echo "secret" | enstash
+  enstash "API_KEY=abc123"
+  enstash "my secret"
     `)
     .parse();
 
@@ -51,7 +51,7 @@ export async function runEnstash(): Promise<void> {
 
   // Input validation
   if (!validateSecretContent(secret)) {
-    exitWithMessage('Secret must not be empty or whitespace only');
+    exitWithMessage('Secret cannot be empty or whitespace only');
   }
 
   if (!validateSecretLength(secret, MAX_SECRET_LENGTH)) {

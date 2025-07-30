@@ -115,7 +115,7 @@ export function decrypt(payload: PayloadStructure, key: Buffer): string {
 export function decodeStashToken(token: string): StashTokenParts {
     const colonIndex = token.indexOf(':');
     if (colonIndex === -1) {
-        throw new Error('Invalid token format: missing colon separator');
+        throw new Error('Invalid stash token format: missing colon separator');
     }
     
     const id = token.substring(0, colonIndex);
