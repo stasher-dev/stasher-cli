@@ -20,7 +20,6 @@ The output of `enstash` is a token in the form `uuid:base64key`, which you'll ne
 ### Limits
 
 - **Maximum secret size**: 4KB (4,096 characters)
-- **Maximum encrypted payload**: 10KB  
 - **Automatic expiration**: 10 minutes
 - **Burn-after-read**: Secrets are deleted after first access
 
@@ -64,7 +63,7 @@ npx unstash "uuid:base64key"
 
 - 🔐 **Client-side encryption** - AES-256-GCM encryption
 - 🔥 **Burn-after-read** - Secrets are deleted after first retrieval
-- ⏰ **10-minute TTL** - All secrets expire automatically
+- ⏰ **10-minute TTL** - All secrets expire automatically if not retreived
 - 🚀 **Zero-knowledge** - Server never sees plaintext
 - 📱 **Cross-platform** - Works on Linux, macOS, Windows
 
@@ -123,6 +122,17 @@ destash "invalid-token"
 - **Perfect forward secrecy**: Each secret uses a unique encryption key
 - **Automatic expiration**: Secrets are deleted after 10 minutes maximum
 - **Burn-after-read**: Secrets are deleted immediately after being accessed
+- **Memory safety**: Sensitive data is zeroed out from memory after use
+- **No disk storage**: Secrets are never written to disk or log files
+
+### Memory Safety Implementation
+
+The CLI implements several security measures to prevent secrets from lingering in memory:
+
+- **Buffer zeroing**: Encryption keys, plaintext secrets, and ciphertext are explicitly zeroed from memory using `buffer.fill(0)`
+- **Variable cleanup**: String variables containing secrets are cleared with empty strings to encourage garbage collection
+- **Minimal exposure**: Secrets exist in memory only for the duration of the encryption/decryption operation
+- **Process isolation**: Each command runs as a separate process that terminates after completion
 
 ## Requirements
 
