@@ -55,7 +55,7 @@ export async function runDestash(): Promise<void> {
 
     // Decode and decrypt
     const { key } = decodeStashToken(rawInput);
-    const payload = parsePayload(encrypted);
+    const payload = encrypted; // encrypted is already the parsed payload object
 
     const plaintext = decrypt(payload, key);
     console.log(plaintext);
