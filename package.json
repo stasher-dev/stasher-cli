@@ -23,6 +23,14 @@
   ],
   "author": "johnny-stasher",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stasher-dev/stasher-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/stasher-dev/stasher-cli/issues"
+  },
+  "homepage": "https://github.com/stasher-dev/stasher-cli#readme",
   "dependencies": {
     "@types/commander": "^2.12.0",
     "@types/js-yaml": "^4.0.9",

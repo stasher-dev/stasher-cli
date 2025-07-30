@@ -134,8 +134,8 @@ destash "invalid-token"
 MIT
 
 ## Related
-- [Stasher CLI](https://github.com/johnny-stasher/stasher-cli) - This CLI tool
-- [Stasher Worker](https://github.com/johnny-stasher/stasher-worker) - API backend
+- [Stasher CLI](https://github.com/stasher-dev/stasher-cli) - This CLI tool
+- [Stasher Worker](https://github.com/stasher-dev/stasher-worker) - API backend
 
 ## Todo
 
