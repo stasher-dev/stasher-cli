@@ -2,6 +2,8 @@
 
 Secure secret sharing with burn-after-read functionality. Share sensitive information that automatically deletes after being read.
 
+This is my first foray into software engineering—built to solve a real problem with minimalism and security in mind.
+
 ## Installation
 
 ```bash
@@ -127,12 +129,14 @@ destash "invalid-token"
 
 ### Memory Safety Implementation
 
-The CLI implements several security measures to prevent secrets from lingering in memory:
+Stasher takes care to minimize secret exposure in memory. This includes:
 
-- **Buffer zeroing**: Encryption keys, plaintext secrets, and ciphertext are explicitly zeroed from memory using `buffer.fill(0)`
-- **Variable cleanup**: String variables containing secrets are cleared with empty strings to encourage garbage collection
-- **Minimal exposure**: Secrets exist in memory only for the duration of the encryption/decryption operation
-- **Process isolation**: Each command runs as a separate process that terminates after completion
+- **Buffer zeroing**: Key material and plaintext are erased with `.fill(0)` in memory buffers
+- **String cleanup**: Sensitive strings are replaced with empty strings immediately after use
+- **Short-lived scope**: Secret material is held in RAM only during encryption/decryption operations
+- **Process isolation**: Each operation runs as a short-lived CLI process, reducing risk of memory leaks
+
+While these precautions help, JavaScript environments like Node.js don't allow perfect memory control—so it's best used for short-lived secrets, not long-term vaults.
 
 ## Requirements
 
@@ -143,9 +147,9 @@ The CLI implements several security measures to prevent secrets from lingering i
 
 MIT
 
-## Related
-- [Stasher CLI](https://github.com/stasher-dev/stasher-cli) - This CLI tool
-- [Stasher Worker](https://github.com/stasher-dev/stasher-worker) - API backend
+## Related Projects
+- 🛠 **Stasher CLI** – The command-line client (this repo)
+- ☁️ **Stasher Worker** – Cloudflare Worker backend written in TypeScript using KV storage
 
 ## Todo
 
