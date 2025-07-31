@@ -25,7 +25,6 @@ npx stasher-cli destash "uuid:key"
 npm install -g stasher-cli
 
 # Or use directly with npx (no installation required)
-```bash
 npx enstash "my secret message"
 ```
 
