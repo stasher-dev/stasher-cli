@@ -12,7 +12,7 @@ npm install -g stasher-cli
 
 # Or use directly with npx (no installation required)
 ```bash
-npx stasher-cli enstash "my secret message"
+npx enstash "my secret message"
 ```
 
 ## Usage
@@ -38,7 +38,7 @@ echo "my secret" | enstash
 cat secret.txt | enstash
 
 # From stdin with npx
-echo "my secret" | npx stasher-cli enstash
+echo "my secret" | npx enstash
 ```
 
 ### Retrieve a Secret
