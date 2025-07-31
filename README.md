@@ -11,10 +11,10 @@ This is my first foray into software engineering—built to solve a real problem
 
 ```bash
 # Try it now - no installation required
-npx stasher-cli enstash "my secret message"
+npx enstash "my secret message"
 # Returns: uuid:key (share this token)
 
-npx stasher-cli destash "uuid:key"  
+npx destash "uuid:key"  
 # Returns: my secret message (burns after reading)
 ```
 
