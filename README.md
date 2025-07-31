@@ -1,8 +1,22 @@
 # Stasher CLI
 
+[![npm version](https://badge.fury.io/js/stasher-cli.svg)](https://www.npmjs.com/package/stasher-cli)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 Secure secret sharing with burn-after-read functionality. Share sensitive information that automatically deletes after being read.
 
 This is my first foray into software engineering—built to solve a real problem with minimalism and security in mind.
+
+## Quickstart
+
+```bash
+# Try it now - no installation required
+npx stasher-cli enstash "my secret message"
+# Returns: uuid:key (share this token)
+
+npx stasher-cli destash "uuid:key"  
+# Returns: my secret message (burns after reading)
+```
 
 ## Installation
 
@@ -107,6 +121,21 @@ enstash "$(cat very-large-file.txt)"
 # Error handling - invalid token
 destash "invalid-token"
 # → Error: Invalid stash token format
+
+# Delete a secret before reading (manual cleanup)
+unstash "a1b2c3d4-e5f6-7890-abcd-ef1234567890:base64key..."
+# → Outputs: Secret deleted successfully
+
+# Delete using just the UUID (if you don't have the full token)
+unstash "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+# → Outputs: Secret deleted successfully
+
+# Use case: Cancel a shared secret
+echo "sensitive-data" | enstash
+# → a1b2c3d4-e5f6-7890-abcd-ef1234567890:base64key...
+# (Oops, shared with wrong person - delete it!)
+unstash "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+# → Secret deleted successfully
 ```
 
 ## How It Works
@@ -117,15 +146,15 @@ destash "invalid-token"
 4. **Retrieve**: The recipient uses the token to decrypt the secret
 5. **Burn**: The stash is permanently deleted after first access
 
-## Security
+## Security Model
 
-- **Zero-knowledge**: The server never sees your plaintext secrets
-- **Client-side crypto**: All encryption/decryption happens on the client device
-- **Perfect forward secrecy**: Each secret uses a unique encryption key
-- **Automatic expiration**: Secrets are deleted after 10 minutes maximum
-- **Burn-after-read**: Secrets are deleted immediately after being accessed
-- **Memory safety**: Sensitive data is zeroed out from memory after use
-- **No disk storage**: Secrets are never written to disk or log files
+- **🔐 AES-256-GCM Encryption** - Military-grade encryption standard
+- **🚫 Zero-Knowledge** - Even the server operator cannot decrypt your secrets
+- **🔥 Burn-After-Read** - Secrets are permanently deleted after first access
+- **⏰ Auto-Expiry** - 10-minute maximum lifetime regardless of access
+- **🛡️ Perfect Forward Secrecy** - Each secret uses a unique encryption key
+- **💾 Memory Safety** - Sensitive data is zeroed out from memory after use
+- **📝 No Disk Storage** - Secrets are never written to disk or log files
 
 ### Memory Safety Implementation
 
