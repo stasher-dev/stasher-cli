@@ -6,8 +6,7 @@
     "stasher": "./dist/index.js",
     "enstash": "./dist/index.js",
     "destash": "./dist/index.js",
-    "unstash": "./dist/index.js",
-    "exstash": "./dist/index.js"
+    "unstash": "./dist/index.js"
   },
   "main": "dist/index.js",
   "scripts": {

@@ -4,7 +4,6 @@ import { basename } from 'path';
 import { runEnstash } from './commands/enstash';
 import { runDestash } from './commands/destash';
 import { runUnstash } from './commands/unstash';
-import { runExstash } from './commands/exstash';
 
 async function main(): Promise<void> {
     const scriptName = basename(process.argv[1]);
@@ -17,11 +16,8 @@ async function main(): Promise<void> {
     else if (scriptName.includes('unstash')) {
         return runUnstash();
     }
-    else if (scriptName.includes('exstash')) {
-        return runExstash();
-    }
     else {
-        console.error('Usage: Call this script as "enstash", "destash", "unstash", or "exstash"');
+        console.error('Usage: Call this script as "enstash", "destash", or "unstash"');
         process.exit(1);
     }
 }
