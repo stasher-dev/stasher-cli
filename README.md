@@ -3,186 +3,156 @@
 [![npm version](https://badge.fury.io/js/stasher-cli.svg)](https://www.npmjs.com/package/stasher-cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Secure secret sharing with burn-after-read functionality. Share sensitive information that automatically deletes after being read.
+Share secrets from your terminal. Burn them after reading. No signups. No BS.
 
-This is my first foray into software engineering—built to solve a real problem with minimalism and security in mind.
+😠 Why?
 
-## Quickstart
+I just wanted to share a password.
+Not spin up a server. Not register for some "secure" web app. Not trust a Slack thread. Just. Send. A. Secret.
+
+So I built Stasher — a command-line tool for burn-after-read secret sharing, built for people who are busy, paranoid, or both.
+
+- Works instantly with npx
+- Encrypts everything before it ever leaves your machine
+- Secrets self-destruct after one read or 10 minutes
+- No account, no login, no metadata, no snooping
+
+Basically, it’s like a Mission Impossible tape, but for API keys.
+
+✨ Why You Might Actually Like This
+
+- 🔐 Zero-knowledge encryption – only you have the key
+- 🔥 Burns after read – one read and it's toast
+- ⚡ CLI-first – pipe stuff, script it, automate it, whatever
+- ❌ No accounts, no setup – literally just run it
+
+📬 Share however you like – Slack, email, QR code, carrier pigeon...(Just tell the pigeon to fly fast — they only have 10 minutes)
+
+🦝 Try It Right Now
 
 ```bash
-# Try it now - no installation required
-npx enstash "my secret message"
-# Returns: uuid:key (share this token)
+npx enstash "the launch code is 🍌-42"
+# → Outputs: uuid:key
 
-npx destash "uuid:key"  
-# Returns: my secret message (burns after reading)
+npx destash "uuid:key"
+# → Outputs: the launch code is 🍌-42
+# → And deletes it forever
 ```
 
-## Installation
+❤️ Powered by Cloudflare
+
+Thanks to Cloudflare Workers + KV, this runs globally with zero servers. No backend to maintain. No database to scale. Just pure edge magic.
+
+Full source of the backend is open and yours to explore: 🔍 [stasher-dev/stasher-worker](https://github.com/stasher-dev/stasher-worker)
+
+📆 Install (If You Must)
 
 ```bash
-# Install globally
 npm install -g stasher-cli
-
-# Or use directly with npx (no installation required)
-npx enstash "my secret message"
 ```
 
-## Usage
+But honestly? npx works great. Why clutter your global install?
 
-The output of `enstash` is a token in the form `uuid:base64key`, which you'll need to retrieve or delete the secret.
+🔧 Usage
 
-### Limits
+🧠 Enstash a Secret
 
-- **Maximum secret size**: 4KB (4,096 characters)
-- **Automatic expiration**: 10 minutes
-- **Burn-after-read**: Secrets are deleted after first access
-
-### Store a Secret
 ```bash
-# From command line argument
-enstash "my secret message"
+# From a string
+enstash "don't forget to feed the AI"
 
-# Or with npx
-npx enstash "my secret message"
-
-# From stdin
-echo "my secret" | enstash
-cat secret.txt | enstash
+# From a file
+cat .env | enstash
 
 # From stdin with npx
-echo "my secret" | npx enstash
+echo "my passphrase is secret123" | npx enstash
 ```
 
-### Retrieve a Secret
+🔓 Destash a Secret
+
 ```bash
-# Use the token returned from enstash
+# Retrieve using the token
 destash "uuid:base64key"
-
 # Or with npx
-npx destash "uuid:base64key" 
+npx destash "uuid:base64key"
 ```
 
-### Delete a Secret
+❌ Unstash (Manual Delete)
+
 ```bash
-# Manually delete before it's read
 unstash "uuid"
 unstash "uuid:base64key"
-
-# Or with npx
 npx unstash "uuid"
 npx unstash "uuid:base64key"
 ```
 
-## Features
-
-- 🔐 **Client-side encryption** - AES-256-GCM encryption
-- 🔥 **Burn-after-read** - Secrets are deleted after first retrieval
-- ⏰ **10-minute TTL** - All secrets expire automatically if not retreived
-- 🚀 **Zero-knowledge** - Server never sees plaintext
-- 📱 **Cross-platform** - Works on Linux, macOS, Windows
-
-## Examples
+💡 Examples
 
 ```bash
-# Store a password
-enstash "mypassword123"
-# → Outputs: a1b2c3d4-e5f6-7890-abcd-ef1234567890:base64key...
-# (uuid:base64key is a one-time-use token used to retrieve your secret)
+# Share your Wi-Fi password with a guest
+npx enstash "yesits1234dontjudge"
 
-# Retrieve it (burns after reading)
-destash "a1b2c3d4-e5f6-7890-abcd-ef1234567890:base64key..."
-# → Outputs: mypassword123
+# Send a one-time OTP over Slack
+npx enstash "OTP: 842991"
 
-# Store from a file (up to 4KB)
-cat ~/.ssh/config | enstash
-# → Outputs: <stash-token>
+# Share a deployment key, then delete it before panic sets in
+echo "DEPLOY_KEY=super-secret" | npx enstash
+npx unstash "uuid"
 
-# Store an API key
-enstash "API_KEY=sk-1234567890abcdef"
-
-# Store multi-line content
-enstash "line 1
-line 2
-line 3"
-
-# Copy to clipboard (macOS)
-destash "token" | pbcopy
-
-# Copy to clipboard (Linux)
-# Requires xclip installed: sudo apt install xclip
-destash "token" | xclip -selection clipboard
-
-# Error handling - secret too large
-enstash "$(cat very-large-file.txt)"
-# → Error: Secret too long (max 4096 characters)
-
-# Error handling - invalid token
-destash "invalid-token"
-# → Error: Invalid stash token format
-
-# Delete a secret before reading (manual cleanup)
-unstash "a1b2c3d4-e5f6-7890-abcd-ef1234567890:base64key..."
-# → Outputs: Secret deleted successfully
-
-# Delete using just the UUID (if you don't have the full token)
-unstash "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
-# → Outputs: Secret deleted successfully
-
-# Use case: Cancel a shared secret
-echo "sensitive-data" | enstash
-# → a1b2c3d4-e5f6-7890-abcd-ef1234567890:base64key...
-# (Oops, shared with wrong person - delete it!)
-unstash "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
-# → Secret deleted successfully
+# Send a secret using... a pigeon
+npx enstash "vault code: 1234#"
+# (Tell the pigeon they've got 10 minutes)
 ```
 
-## How It Works
+But in all seriousness — if you’ve ever needed to share a sensitive message quickly and privately without deploying a server or signing up for anything, Stasher is for you.
 
-1. **Encrypt**: Your secret is encrypted client-side with AES-256-GCM
-2. **Store**: Only the encrypted data is sent for stashing
-3. **Share**: You get a token containing the UUID and decryption key which you can share via any channel you prefer
-4. **Retrieve**: The recipient uses the token to decrypt the secret
-5. **Burn**: The stash is permanently deleted after first access
+Zero setup. Zero trust. One-time secrets. That’s it.
 
-## Security Model
+🔒 Features You May Actually Care About
 
-- **🔐 AES-256-GCM Encryption** - Military-grade encryption standard
-- **🚫 Zero-Knowledge** - Even the server operator cannot decrypt your secrets
-- **🔥 Burn-After-Read** - Secrets are permanently deleted after first access
-- **⏰ Auto-Expiry** - 10-minute maximum lifetime regardless of access
-- **🛡️ Perfect Forward Secrecy** - Each secret uses a unique encryption key
-- **💾 Memory Safety** - Sensitive data is zeroed out from memory after use
-- **📝 No Disk Storage** - Secrets are never written to disk or log files
+- AES-256-GCM encryption (done client-side)
+- Burn-after-read (one-time use, then poof)
+- 10-minute expiration (for slow pigeons)
+- Buffers cleared from memory after use (where Node.js allows)
+- No logs, no tracking, no metadata
 
-### Memory Safety Implementation
+📨 Share It However You Like
 
-Stasher takes care to minimize secret exposure in memory. This includes:
+Once you get your uuid:key token, you're free to share it by whatever channel suits you:
 
-- **Buffer zeroing**: Key material and plaintext are erased with `.fill(0)` in memory buffers
-- **String cleanup**: Sensitive strings are replaced with empty strings immediately after use
-- **Short-lived scope**: Secret material is held in RAM only during encryption/decryption operations
-- **Process isolation**: Each operation runs as a short-lived CLI process, reducing risk of memory leaks
+- DM it on Slack
+- Paste it in a Zoom chat
+- Email it to yourself
+- Encode it into a QR code
+- Whisper it across the room
+- Tie it to a carrier pigeon (remind them: 10-minute expiry)
 
-While these precautions help, JavaScript environments like Node.js don't allow perfect memory control—so it's best used for short-lived secrets, not long-term vaults.
+The point is: you choose the channel. Stasher never stores the key, so only whoever gets the complete token can read the message.
 
-## Requirements
+⚖️ How It Works
 
-- Node.js 16 or higher
-- Internet connection
+1. Stasher encrypts locally using AES-256-GCM
+2. It uploads only the ciphertext, IV, and tag - this is the stash
+3. In return you get a shareable token: uuid:base64key
+4. You can share this token however you want
+5. Recipent uses destash to retreive the stash which auto-deletes the stash
+5. The stash is decrypted client-side and the secret revealed
 
-## License
+⚠️ Limits
 
-MIT
+- Max size: 4KB
+- TTL: 10 minutes
+- One-time access only
 
-## Related Projects
-- 🛠 **Stasher CLI** – The command-line client (this repo)
-- ☁️ **Stasher Worker** – Cloudflare Worker backend written in TypeScript using KV storage
-
-## Todo
+💪 Roadmap
 
 - [ ] Add `--json` output format for programmatic use
 - [ ] Support custom TTL (time-to-live) settings
 - [ ] Add `--verbose` flag for debugging
 - [ ] Web interface integration
 - [ ] Binary file support with base64 encoding
+
+🧮 Built for Me. Maybe for You Too.
+
+I'll keep building as more use cases come up. Issues, ideas, weird edge cases — all welcome.
+
