@@ -5,7 +5,7 @@
 
 Share secrets from your terminal. Burn them after reading. No signups. No BS.
 
-😠 Why?
+Why?
 
 I just wanted to share a password.
 Not spin up a server. Not register for some "secure" web app. Not trust a Slack thread. Just. Send. A. Secret.
@@ -17,18 +17,18 @@ So I built Stasher — a command-line tool for burn-after-read secret sharing, b
 - Secrets self-destruct after one read or 10 minutes
 - No account, no login, no metadata, no snooping
 
-Basically, it’s like a Mission Impossible tape, but for API keys.
+Basically, it’s like a Mission Impossible tape, but for API keys.np
 
-✨ Why You Might Actually Like This
+Why You Might Actually Like This
 
-- 🔐 Zero-knowledge encryption – only you have the key
-- 🔥 Burns after read – one read and it's toast
-- ⚡ CLI-first – pipe stuff, script it, automate it, whatever
-- ❌ No accounts, no setup – literally just run it
+- Zero-knowledge encryption – only you have the key
+- Burns after read – one read and it's toast
+- CLI-first – pipe stuff, script it, automate it, whatever
+- No accounts, no setup – literally just run it
 
-📬 Share however you like – Slack, email, QR code, carrier pigeon...(Just tell the pigeon to fly fast — they only have 10 minutes)
+Share however you like – Slack, email, QR code, carrier pigeon...(Just tell the pigeon to fly fast — they only have 10 minutes)
 
-🦝 Try It Right Now
+Try It Right Now
 
 ```bash
 npx enstash "the launch code is 🍌-42"
@@ -39,13 +39,13 @@ npx destash "uuid:key"
 # → And deletes it forever
 ```
 
-❤️ Powered by Cloudflare
+Powered by Cloudflare
 
 Thanks to Cloudflare Workers + KV, this runs globally with zero servers. No backend to maintain. No database to scale. Just pure edge magic.
 
 Full source of the backend is open and yours to explore: 🔍 [stasher-dev/stasher-worker](https://github.com/stasher-dev/stasher-worker)
 
-📆 Install (If You Must)
+Install (If You Must)
 
 ```bash
 npm install -g stasher-cli
@@ -53,9 +53,9 @@ npm install -g stasher-cli
 
 But honestly? npx works great. Why clutter your global install?
 
-🔧 Usage
+Usage
 
-🧠 Enstash a Secret
+Enstash a Secret
 
 ```bash
 # From a string
@@ -68,7 +68,7 @@ cat .env | enstash
 echo "my passphrase is secret123" | npx enstash
 ```
 
-🔓 Destash a Secret
+Destash a Secret
 
 ```bash
 # Retrieve using the token
@@ -77,7 +77,7 @@ destash "uuid:base64key"
 npx destash "uuid:base64key"
 ```
 
-❌ Unstash (Manual Delete)
+Unstash (Manual Delete)
 
 ```bash
 unstash "uuid"
@@ -86,7 +86,7 @@ npx unstash "uuid"
 npx unstash "uuid:base64key"
 ```
 
-💡 Examples
+Examples
 
 ```bash
 # Share your Wi-Fi password with a guest
@@ -108,7 +108,7 @@ But in all seriousness — if you’ve ever needed to share a sensitive message 
 
 Zero setup. Zero trust. One-time secrets. That’s it.
 
-🔒 Features You May Actually Care About
+Features You May Actually Care About
 
 - AES-256-GCM encryption (done client-side)
 - Burn-after-read (one-time use, then poof)
@@ -116,7 +116,7 @@ Zero setup. Zero trust. One-time secrets. That’s it.
 - Buffers cleared from memory after use (where Node.js allows)
 - No logs, no tracking, no metadata
 
-📨 Share It However You Like
+Share It However You Like
 
 Once you get your uuid:key token, you're free to share it by whatever channel suits you:
 
@@ -129,7 +129,7 @@ Once you get your uuid:key token, you're free to share it by whatever channel su
 
 The point is: you choose the channel. Stasher never stores the key, so only whoever gets the complete token can read the message.
 
-⚖️ How It Works
+How It Works
 
 1. Stasher encrypts locally using AES-256-GCM
 2. It uploads only the ciphertext, IV, and tag - this is the stash
@@ -138,13 +138,13 @@ The point is: you choose the channel. Stasher never stores the key, so only whoe
 5. Recipent uses destash to retreive the stash which auto-deletes the stash
 5. The stash is decrypted client-side and the secret revealed
 
-⚠️ Limits
+Limits
 
 - Max size: 4KB
 - TTL: 10 minutes
 - One-time access only
 
-💪 Roadmap
+Roadmap
 
 - [ ] Add `--json` output format for programmatic use
 - [ ] Support custom TTL (time-to-live) settings
@@ -152,7 +152,7 @@ The point is: you choose the channel. Stasher never stores the key, so only whoe
 - [ ] Web interface integration
 - [ ] Binary file support with base64 encoding
 
-🧮 Built for Me. Maybe for You Too.
+Built for Me. Maybe for You Too.
 
 I'll keep building as more use cases come up. Issues, ideas, weird edge cases — all welcome.
 
