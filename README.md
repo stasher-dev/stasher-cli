@@ -43,7 +43,7 @@ Powered by Cloudflare
 
 Thanks to Cloudflare Workers + KV, this runs globally with zero servers. No backend to maintain. No database to scale. Just pure edge magic.
 
-Full source of the backend is open and yours to explore: 🔍 [stasher-dev/stasher-worker](https://github.com/stasher-dev/stasher-worker)
+Full source of the backend is open and yours to explore: 🔍 [stasher-dev/stasher-api](https://github.com/stasher-dev/stasher-api)
 
 Install (If You Must)
 
@@ -152,7 +152,12 @@ Roadmap
 - [ ] Web interface integration
 - [ ] Binary file support with base64 encoding
 
-Built for Me. Maybe for You Too.
+## Related Projects
+
+- **[Stasher API](https://github.com/stasher-dev/stasher-api)** - Cloudflare Workers API backend (open source)
+- **[Stasher App](https://github.com/stasher-dev/stasher-app)** - Browser/web interface with bookmarklet support
+
+## Built for Me. Maybe for You Too.
 
 I'll keep building as more use cases come up. Issues, ideas, weird edge cases — all welcome.
 
