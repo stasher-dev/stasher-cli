@@ -47,6 +47,14 @@ export async function runDestash(): Promise<void> {
       exitWithMessage('Stash not found or already retrieved.');
     }
 
+    if (response.status === 410) {
+      const errorData = await response.json();
+      const errorMessage = errorData.error === 'Expired' 
+        ? 'This stash has expired' 
+        : 'This stash has already been consumed';
+      exitWithMessage(errorMessage);
+    }
+
     if (!response.ok) {
       exitWithMessage(`Failed to fetch stash: HTTP ${response.status}`);
     }
