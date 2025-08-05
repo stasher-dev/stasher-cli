@@ -14,8 +14,9 @@ So I built Stasher — a command-line tool for burn-after-read secret sharing, b
 
 - Works instantly with npx
 - Encrypts everything before it ever leaves your machine
-- Secrets self-destruct after one read or 10 minutes
+- Secrets self-destruct after one read or 10 minutes (mathematically guaranteed)
 - No account, no login, no metadata, no snooping
+- Hybrid expiry system with fortress-level security
 
 Basically, it’s like a Mission Impossible tape, but for API keys.np
 
@@ -39,9 +40,15 @@ npx destash "uuid:key"
 # → And deletes it forever
 ```
 
-Powered by Cloudflare
+Powered by Cloudflare Edge Computing
 
-Thanks to Cloudflare Workers + KV, this runs globally with zero servers. No backend to maintain. No database to scale. Just pure edge magic.
+Thanks to **Cloudflare Workers + Durable Objects + KV**, this runs globally with fortress-level security. No backend to maintain. No database to scale. Just pure edge magic with mathematical guarantees.
+
+### Architecture Highlights
+- **Durable Objects** provide atomic consistency per secret
+- **KV Storage** handles encrypted payloads with global distribution  
+- **Hybrid expiry system** with reactive validation + proactive cleanup
+- **Zero race conditions** through self-destructing gatekeepers
 
 Full source of the backend is open and yours to explore: 🔍 [stasher-dev/stasher-api](https://github.com/stasher-dev/stasher-api)
 
@@ -110,11 +117,14 @@ Zero setup. Zero trust. One-time secrets. That’s it.
 
 Features You May Actually Care About
 
-- AES-256-GCM encryption (done client-side)
-- Burn-after-read (one-time use, then poof)
-- 10-minute expiration (for slow pigeons)
-- Buffers cleared from memory after use (where Node.js allows)
-- No logs, no tracking, no metadata
+- **AES-256-GCM encryption** (done client-side)
+- **Burn-after-read** (one-time use, then poof)
+- **Hybrid expiry system** (dual-layer protection with mathematical guarantees)
+- **10-minute expiration** (for slow pigeons)
+- **Race condition protection** (atomic operations via Durable Objects)
+- **Self-destructing gatekeepers** (proactive cleanup of unused stashes)
+- **Buffers cleared from memory** after use (where Node.js allows)
+- **No logs, no tracking, no metadata**
 
 Share It However You Like
 
@@ -131,12 +141,28 @@ The point is: you choose the channel. Stasher never stores the key, so only whoe
 
 How It Works
 
+### Client-Side Encryption
 1. Stasher encrypts locally using AES-256-GCM
 2. It uploads only the ciphertext, IV, and tag - this is the stash
-3. In return you get a shareable token: uuid:base64key
+3. In return you get a shareable token: `uuid:base64key`
 4. You can share this token however you want
-5. Recipent uses destash to retreive the stash which auto-deletes the stash
-5. The stash is decrypted client-side and the secret revealed
+
+### Hybrid Expiry System
+5. **Dual-layer protection** ensures secrets expire properly:
+   - **Reactive expiry** - validates on every access
+   - **Proactive cleanup** - automatic Durable Object alarms
+6. Each secret gets its own atomic gatekeeper (one UUID = one Durable Object)
+7. Mathematical guarantees prevent race conditions and double-retrieval
+
+### Burn-After-Read
+8. Recipient uses `destash` to retrieve the stash
+9. The stash is decrypted client-side and the secret revealed
+10. The stash auto-deletes after reading (atomic operation)
+
+### Error Handling
+- **"This stash has expired"** - for stashes past 10-minute TTL
+- **"This stash has already been consumed"** - for burn-after-read stashes
+- **"Stash not found"** - for invalid or non-existent stashes
 
 Limits
 
