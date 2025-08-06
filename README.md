@@ -1,8 +1,5 @@
 # Stasher CLI
 
-[![npm version](https://badge.fury.io/js/stasher-cli.svg)](https://www.npmjs.com/package/stasher-cli)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
 Share secrets from your terminal. Burn them after reading. No signups. No BS.
 
 Why?
