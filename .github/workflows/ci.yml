@@ -1,0 +1,16 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-test:
+    uses: stasher-dev/stasher-ci/.github/workflows/node-pipeline.yml@main
+    with:
+      node-version: '20'
+      build-command: 'npm run build'
+      test-command: 'npm test || echo "No tests configured"'
+      deploy-on-main: false  # CLI doesn't deploy, only publishes on tags

@@ -1,0 +1,15 @@
+name: Release
+
+on:
+  push:
+    tags: [ 'v*' ]
+
+jobs:
+  release:
+    uses: stasher-dev/stasher-ci/.github/workflows/release.yml@main
+    with:
+      node-version: '20'
+      build-command: 'npm run build'
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
