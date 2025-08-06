@@ -52,7 +52,20 @@ Thanks to **Cloudflare Workers + Durable Objects + KV**, this runs globally with
 
 Full source of the backend is open and yours to explore: 🔍 [stasher-dev/stasher-api](https://github.com/stasher-dev/stasher-api)
 
-Install (If You Must)
+## 📦 Installation & Deployment
+
+🚀 **Automated Publishing**
+
+This CLI features automated publishing via [stasher-ci](https://github.com/stasher-dev/stasher-ci):
+
+- **Automatic Publishing**: Version tags automatically publish to [npm](https://www.npmjs.com/package/stasher-cli)
+- **GitHub Releases**: Automatic release notes and binaries  
+- **Build Pipeline**: TypeScript compilation, testing, and packaging
+- **Zero Downtime**: Instant availability through npm's global CDN
+
+**Build Status**: [![CI Pipeline](https://github.com/stasher-dev/stasher-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/stasher-dev/stasher-cli/actions/workflows/ci.yml) [![Release](https://github.com/stasher-dev/stasher-cli/actions/workflows/release.yml/badge.svg)](https://github.com/stasher-dev/stasher-cli/actions/workflows/release.yml)
+
+### Install (If You Must)
 
 ```bash
 npm install -g stasher-cli
