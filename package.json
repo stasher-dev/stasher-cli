@@ -22,7 +22,7 @@
     "burn-after-read"
   ],
   "author": "johnny-stasher",
-  "license": "Apache-2.0",
+  "license": "BUSL-1.1",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/stasher-dev/stasher-cli.git"
