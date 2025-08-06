@@ -11,6 +11,11 @@ on:
         required: true
         default: 'v1.3.2'
 
+permissions:
+  contents: write  # Required to create GitHub releases
+  packages: write  # For npm package publishing
+  id-token: write  # For secure token handling
+
 jobs:
   release:
     uses: stasher-dev/stasher-ci/.github/workflows/release.yml@main
