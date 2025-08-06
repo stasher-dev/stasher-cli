@@ -3,6 +3,12 @@ name: Release
 on:
   push:
     tags: [ 'v*' ]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to release'
+        required: true
+        default: 'v1.3.2'
 
 jobs:
   release:
