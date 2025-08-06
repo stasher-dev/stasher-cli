@@ -38,7 +38,10 @@ export async function runUnstash(): Promise<void> {
   try {
     const config = loadEnvConfig();
 
-    const response = await fetch(`${config.apiBaseUrl}/unstash/${uuid}`, {
+    // Use fetch with retry for network resilience
+    const { fetchWithRetry } = await import('../utils/fetch-retry');
+    
+    const response = await fetchWithRetry(`${config.apiBaseUrl}/unstash/${uuid}`, {
       method: 'DELETE'
     });
 

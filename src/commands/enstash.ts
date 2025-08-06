@@ -76,7 +76,10 @@ export async function runEnstash(): Promise<void> {
 
       const config = loadEnvConfig();
 
-      const response = await fetch(`${config.apiBaseUrl}/enstash`, {
+      // Use fetch with retry for network resilience
+      const { fetchWithRetry } = await import('../utils/fetch-retry');
+      
+      const response = await fetchWithRetry(`${config.apiBaseUrl}/enstash`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: encodePayload(payload)

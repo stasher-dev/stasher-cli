@@ -38,8 +38,10 @@ export async function runDestash(): Promise<void> {
   try {
     const config = loadEnvConfig();
 
-    // Fetch encrypted payload from API
-    const response = await fetch(`${config.apiBaseUrl}/destash/${uuid}`, {
+    // Use fetch with retry for network resilience
+    const { fetchWithRetry } = await import('../utils/fetch-retry');
+    
+    const response = await fetchWithRetry(`${config.apiBaseUrl}/destash/${uuid}`, {
       method: 'GET'
     });
 
