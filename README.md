@@ -70,6 +70,59 @@ npm install -g stasher-cli
 
 But honestly? npx works great. Why clutter your global install?
 
+## Cryptographic Verification
+
+**All releases are signed with Cosign** using GitHub OIDC keyless signing and logged to the [Rekor transparency log](https://rekor.sigstore.dev).
+
+### Verify npm Package
+
+```bash
+# Install cosign (if you don't have it)
+# macOS: brew install cosign
+# Linux: see https://docs.sigstore.dev/cosign/installation/
+
+# Get the latest version
+VERSION=$(npm view stasher-cli version)
+
+# Download package and signature
+npm pack stasher-cli@$VERSION
+curl -L -O "https://github.com/stasher-dev/stasher-cli/releases/download/v$VERSION/stasher-cli-$VERSION.tgz.sig"
+
+# Verify signature
+cosign verify-blob \
+  --certificate-identity-regexp="https://github.com/stasher-dev/stasher-cli/.*" \
+  --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
+  --signature=stasher-cli-$VERSION.tgz.sig \
+  stasher-cli-$VERSION.tgz
+```
+
+### Verify Checksums
+
+```bash
+# Download and verify checksums
+curl -L -O "https://github.com/stasher-dev/stasher-cli/releases/download/v$VERSION/checksums.txt"
+curl -L -O "https://github.com/stasher-dev/stasher-cli/releases/download/v$VERSION/checksums.txt.sig"
+
+# Verify checksums signature
+cosign verify-blob \
+  --certificate-identity-regexp="https://github.com/stasher-dev/stasher-cli/.*" \
+  --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
+  --signature=checksums.txt.sig \
+  checksums.txt
+
+# Verify package integrity
+sha256sum -c checksums.txt
+```
+
+### What This Proves
+
+**Authenticity** - Code was built by stasher-dev GitHub Actions  
+**Integrity** - Package hasn't been tampered with since signing  
+**Transparency** - All signatures logged to public Rekor ledger  
+**Non-repudiation** - Cryptographic proof of origin
+
+**Don't trust, verify.** 🛡️
+
 Usage
 
 Enstash a Secret
