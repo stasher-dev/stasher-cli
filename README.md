@@ -70,9 +70,9 @@ npm install -g stasher-cli
 
 But honestly? npx works great. Why clutter your global install?
 
-## Cryptographic Verification
+## 🔐 Cryptographic Verification
 
-**All releases are signed with Cosign** using GitHub OIDC keyless signing and logged to the [Rekor transparency log](https://rekor.sigstore.dev).
+**All releases are signed with Cosign** using GitHub OIDC keyless signing and include **SLSA v1 provenance attestation**, all logged to the [Rekor transparency log](https://rekor.sigstore.dev).
 
 ### Verify npm Package
 
@@ -96,6 +96,28 @@ cosign verify-blob \
   stasher-cli-$VERSION.tgz
 ```
 
+### 🧾 Verify SLSA v1 Provenance Attestation
+
+```bash
+# Download the attestation
+curl -L -O "https://github.com/stasher-dev/stasher-cli/releases/download/v$VERSION/stasher-cli-$VERSION.tgz.intoto.jsonl"
+
+# Option 1: Verify with slsa-verifier (recommended)
+# Install: go install github.com/slsa-framework/slsa-verifier/v2/cli/slsa-verifier@latest
+slsa-verifier verify-artifact \
+  --provenance-path stasher-cli-$VERSION.tgz.intoto.jsonl \
+  --source-uri github.com/stasher-dev/stasher-cli \
+  --source-tag v$VERSION \
+  stasher-cli-$VERSION.tgz
+
+# Option 2: Manual inspection with cosign
+cosign verify-attestation \
+  --certificate-identity-regexp="https://github.com/stasher-dev/stasher-cli/.*" \
+  --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
+  --type=https://slsa.dev/provenance/v1 \
+  stasher-cli-$VERSION.tgz | jq .payload -r | base64 -d | jq
+```
+
 ### Verify Checksums
 
 ```bash
@@ -114,12 +136,20 @@ cosign verify-blob \
 sha256sum -c checksums.txt
 ```
 
-### What This Proves
+### 🏗️ What This Proves
 
-**Authenticity** - Code was built by stasher-dev GitHub Actions  
-**Integrity** - Package hasn't been tampered with since signing  
-**Transparency** - All signatures logged to public Rekor ledger  
-**Non-repudiation** - Cryptographic proof of origin
+**✅ Source Integrity** - Built from verified GitHub repository  
+**✅ Build Authenticity** - Built by GitHub Actions with OIDC identity  
+**✅ Supply Chain Security** - Complete build environment captured in attestation  
+**✅ Provenance** - Traceable from source commit to release artifact  
+**✅ Transparency** - All signatures logged to public [Rekor](https://rekor.sigstore.dev) log  
+**✅ Non-repudiation** - Cryptographic proof of origin
+
+The SLSA attestation contains detailed metadata about:
+- **Source commit** and repository
+- **Build environment** (Node.js version, OS, dependencies)
+- **Build process** (exact commands, working directory)
+- **GitHub Actions context** (workflow, actor, run ID)
 
 **Don't trust, verify.** 🛡️
 
