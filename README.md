@@ -1,111 +1,112 @@
-# Stasher CLI
+# 🛡️ Stasher CLI
 
-Share secrets from your terminal. Burn them after reading. No signups. No BS.
+Share secrets from your terminal. One-time only. No accounts. No backend. No BS.
 
-Why?
+## 🤔 Why?
 
-I just wanted to share a password.
-Not spin up a server. Not register for some "secure" web app. Not trust a Slack thread. Just. Send. A. Secret.
+I just wanted to share a password.  
+Not spin up a server. Not sign up for a "secure" web app.  
+Not trust a Slack thread. Just. Send. A. Secret.
 
-So I built Stasher — a command-line tool for burn-after-read secret sharing, built for people who are busy, paranoid, or both.
+So I built Stasher — a burn-after-read, command-line tool for secure, ephemeral secret sharing.  
+Built for people who are busy, paranoid, or both.
 
-- Works instantly with npx
-- Encrypts everything before it ever leaves your machine
-- Secrets self-destruct after one read or 10 minutes (mathematically guaranteed)
-- No account, no login, no metadata, no snooping
-- Hybrid expiry system with fortress-level security
+## 🔍 "How Can I Trust You?"
 
-Basically, it’s like a Mission Impossible tape, but for API keys.np
+That's what someone asked me — and they were right to.
 
-Why You Might Actually Like This
+Even if I say:
 
-- Zero-knowledge encryption – only you have the key
-- Burns after read – one read and it's toast
-- CLI-first – pipe stuff, script it, automate it, whatever
-- No accounts, no setup – literally just run it
+*"It's encrypted"*
 
-Share however you like – Slack, email, QR code, carrier pigeon...(Just tell the pigeon to fly fast — they only have 10 minutes)
+*"The key never touches the server"*
 
-Try It Right Now
+*"No logs, no tracking, no metadata"...*
+
+How do you know I'm not lying?
+
+## 🧠 I realized: the more secrecy your secrets require, the more transparency my system must offer.  
+So I built Stasher to prove itself.
+
+## 🔐 Everything Is Verifiable
+
+Every Stasher release:
+
+✅ Is cryptographically signed with Cosign
+
+✅ Includes a SLSA v1 provenance attestation
+
+✅ Publishes a signed SBOM with all dependencies + licenses
+
+✅ Is logged in the Rekor transparency log
+
+✅ Comes with full verification instructions
+
+## 📖 Every Line of Code Is Public
+
+Everything that runs Stasher is open and verifiable:
+
+🔧 [CLI](https://github.com/stasher-dev/stasher-cli)
+
+🛰️ [API](https://github.com/stasher-dev/stasher-api)
+
+🖥️ [App](https://github.com/stasher-dev/stasher-app)
+
+⚙️ [CI/CD](https://github.com/stasher-dev/stasher-ci)
+
+🌐 [Website](https://github.com/stasher-dev/stasher-website)
+
+**🛡️ The only thing we don't expose? Your secret. Everything else is yours to inspect.**
+
+## 💡 Why You Might Actually Care
+
+🔐 **Zero-knowledge encryption** – AES-256-GCM, done locally
+
+💣 **Burn-after-read** – one use, then it's gone forever
+
+🧰 **CLI-first** – pipe it, script it, automate it
+
+⚡ **No setup** – just run it with `npx`
+
+⌛ **10-minute expiry** – with proactive + reactive cleanup
+
+📜 **Full supply chain transparency** – signed, attested, and public
+
+## 🚀 Try It Now
 
 ```bash
 npx enstash "the launch code is 🍌-42"
 # → Outputs: uuid:key
 
 npx destash "uuid:key"
-# → Outputs: the launch code is 🍌-42
-# → And deletes it forever
+# → Reveals the secret and deletes it forever
 ```
 
-Powered by Cloudflare Edge Computing
-
-Thanks to **Cloudflare Workers + Durable Objects + KV**, this runs globally with fortress-level security. No backend to maintain. No database to scale. Just pure edge magic with mathematical guarantees.
-
-### Architecture Highlights
-- **Durable Objects** provide atomic consistency per secret
-- **KV Storage** handles encrypted payloads with global distribution  
-- **Hybrid expiry system** with reactive validation + proactive cleanup
-- **Zero race conditions** through self-destructing gatekeepers
-
-Full source of the backend is open and yours to explore: 🔍 [stasher-dev/stasher-api](https://github.com/stasher-dev/stasher-api)
-
-## 📦 Installation & Deployment
-
-🚀 **Automated Publishing**
-
-This CLI features automated publishing via [stasher-ci](https://github.com/stasher-dev/stasher-ci):
-
-- **Automatic Publishing**: Version tags automatically publish to [npm](https://www.npmjs.com/package/stasher-cli)
-- **GitHub Releases**: Automatic release notes and binaries  
-- **Build Pipeline**: TypeScript compilation, testing, and packaging
-- **Zero Downtime**: Instant availability through npm's global CDN
-
-
-### Install (If You Must)
-
-```bash
-npm install -g stasher-cli
-```
-
-But honestly? npx works great. Why clutter your global install?
-
-## 🔐 Cryptographic Verification
-
-Every Stasher CLI release is **cryptographically signed** and includes complete supply chain security:
-
-✅ **Signed with Cosign** - GitHub OIDC keyless signing  
-✅ **SLSA v1 Attestation** - Complete build provenance metadata  
-✅ **SBOM Included** - Full dependency transparency with licenses  
-✅ **Rekor Logged** - Public transparency log for all signatures
-
-### Quick Verification
+## 🔐 Trust, But Actually Verify
 
 ```bash
 # Verify latest release
 VERSION=$(npm view stasher-cli version)
 npm pack stasher-cli@$VERSION
-curl -L -O "https://github.com/stasher-dev/stasher-cli/releases/download/v$VERSION/stasher-cli-$VERSION.tgz.sig"
 
 cosign verify-blob \
   --certificate-identity-regexp="https://github.com/stasher-dev/stasher-cli/.*" \
   --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
-  --signature=stasher-cli-$VERSION.tgz.sig \
-  stasher-cli-$VERSION.tgz
+  --signature="stasher-cli-$VERSION.tgz.sig" \
+  "stasher-cli-$VERSION.tgz"
 ```
 
-### Complete Verification Guides
+**📚 More:**
 
-- **[📖 Verification Overview](./docs/VERIFICATION.md)** - Complete verification guide
-- **[🔐 Cosign Signatures](./docs/cosign.md)** - Package signature verification
-- **[🧾 SLSA Attestation](./docs/slsa.md)** - Supply chain provenance  
-- **[📋 SBOM Verification](./docs/sbom.md)** - Dependency transparency
-- **[📜 Rekor Transparency](./docs/rekor.md)** - Public audit log
+- **[📖 Verification Overview](./docs/verification.md)**
+- **[🔐 Cosign Signatures](./docs/cosign.md)**
+- **[🧾 SLSA Attestation](./docs/slsa.md)**
+- **[📋 SBOM Verification](./docs/sbom.md)**
+- **[📜 Rekor Transparency](./docs/rekor.md)**
 
-**Don't trust, verify.** 🛡️
+## 🛠 Usage
 
-Usage
-
-Enstash a Secret
+### Enstash (Create a Secret)
 
 ```bash
 # From a string
@@ -118,115 +119,106 @@ cat .env | enstash
 echo "my passphrase is secret123" | npx enstash
 ```
 
-Destash a Secret
+### Destash (Read + Burn)
 
 ```bash
-# Retrieve using the token
 destash "uuid:base64key"
-# Or with npx
 npx destash "uuid:base64key"
 ```
 
-Unstash (Manual Delete)
+### Unstash (Manual Delete)
 
 ```bash
 unstash "uuid"
 unstash "uuid:base64key"
-npx unstash "uuid"
-npx unstash "uuid:base64key"
 ```
 
-Examples
+## 🧪 Examples
 
 ```bash
-# Share your Wi-Fi password with a guest
+# Share Wi-Fi password with a guest
 npx enstash "yesits1234dontjudge"
 
-# Send a one-time OTP over Slack
+# Send a one-time OTP via Slack
 npx enstash "OTP: 842991"
 
-# Share a deployment key, then delete it before panic sets in
+# Share a deployment key, then delete it
 echo "DEPLOY_KEY=super-secret" | npx enstash
 npx unstash "uuid"
 
-# Send a secret using... a pigeon
+# Send a secret via pigeon 🐦
 npx enstash "vault code: 1234#"
-# (Tell the pigeon they've got 10 minutes)
+# (Remind them: 10-minute expiry)
 ```
 
-But in all seriousness — if you’ve ever needed to share a sensitive message quickly and privately without deploying a server or signing up for anything, Stasher is for you.
+## 🔍 How It Works
 
-Zero setup. Zero trust. One-time secrets. That’s it.
+### 🔐 **Client-Side Encryption**
 
-Features You May Actually Care About
+Stasher encrypts with **AES-256-GCM** before sending anything
 
-- **AES-256-GCM encryption** (done client-side)
-- **Burn-after-read** (one-time use, then poof)
-- **Hybrid expiry system** (dual-layer protection with mathematical guarantees)
-- **10-minute expiration** (for slow pigeons)
-- **Race condition protection** (atomic operations via Durable Objects)
-- **Self-destructing gatekeepers** (proactive cleanup of unused stashes)
-- **Buffers cleared from memory** after use (where Node.js allows)
-- **No logs, no tracking, no metadata**
+It uploads: ciphertext, IV, and tag — **never the key**
 
-Share It However You Like
+You get a `uuid:base64key` token to share
 
-Once you get your uuid:key token, you're free to share it by whatever channel suits you:
+### ⏱ **Hybrid Expiry System** 
 
-- DM it on Slack
-- Paste it in a Zoom chat
-- Email it to yourself
-- Encode it into a QR code
-- Whisper it across the room
-- Tie it to a carrier pigeon (remind them: 10-minute expiry)
+**Reactive expiry**: validated on every access  
+**Proactive cleanup**: background Durable Object alarms  
+**Atomic**: each stash is guarded by its own isolated gatekeeper (one DO per UUID)
 
-The point is: you choose the channel. Stasher never stores the key, so only whoever gets the complete token can read the message.
+### 💥 **Burn-After-Read**
 
-How It Works
+Once `destash` is called, the secret is revealed and the stash is burned
 
-### Client-Side Encryption
-1. Stasher encrypts locally using AES-256-GCM
-2. It uploads only the ciphertext, IV, and tag - this is the stash
-3. In return you get a shareable token: `uuid:base64key`
-4. You can share this token however you want
+No replays, no race conditions — **guaranteed**
 
-### Hybrid Expiry System
-5. **Dual-layer protection** ensures secrets expire properly:
-   - **Reactive expiry** - validates on every access
-   - **Proactive cleanup** - automatic Durable Object alarms
-6. Each secret gets its own atomic gatekeeper (one UUID = one Durable Object)
-7. Mathematical guarantees prevent race conditions and double-retrieval
+## 🚫 Limits
 
-### Burn-After-Read
-8. Recipient uses `destash` to retrieve the stash
-9. The stash is decrypted client-side and the secret revealed
-10. The stash auto-deletes after reading (atomic operation)
+| Feature | Limit |
+|---------|-------|
+| Max size | 4 KB |
+| Time to live | 10 minutes |
+| Access | One-time |
 
-### Error Handling
-- **"This stash has expired"** - for stashes past 10-minute TTL
-- **"This stash has already been consumed"** - for burn-after-read stashes
-- **"Stash not found"** - for invalid or non-existent stashes
+## 📦 Install (Optional)
 
-Limits
+```bash
+npm install -g stasher-cli
+```
 
-- Max size: 4KB
-- TTL: 10 minutes
-- One-time access only
+…but honestly? `npx` is faster and cleaner.
 
-Roadmap
+## 🧪 Roadmap
 
-- [ ] Add `--json` output format for programmatic use
-- [ ] Support custom TTL (time-to-live) settings
-- [ ] Add `--verbose` flag for debugging
-- [ ] Web interface integration
-- [ ] Binary file support with base64 encoding
+🔄 Add `--json` output format for programmatic use  
+⏰ Support custom TTL (time-to-live) settings  
+🔊 Add `--verbose` flag for debugging  
+🌐 Web interface integration  
+📁 Binary file support with base64 encoding  
 
-## Related Projects
+## 🌐 Architecture
 
-- **[Stasher API](https://github.com/stasher-dev/stasher-api)** - Cloudflare Workers API backend (open source)
-- **[Stasher App](https://github.com/stasher-dev/stasher-app)** - Browser/web interface with bookmarklet support
+Powered by **Cloudflare Edge**, built for security:
 
-## Built for Me. Maybe for You Too.
+| Layer | Technology |
+|-------|------------|
+| Atomic logic | Durable Objects |
+| Storage | KV (encrypted only) |
+| Expiry logic | Reactive validation + alarms |
+| Race protection | Per-secret DO isolation |
 
-I'll keep building as more use cases come up. Issues, ideas, weird edge cases — all welcome.
+**📖 Backend source** → [stasher-dev/stasher-api](https://github.com/stasher-dev/stasher-api)
+
+## 🧩 Related Projects
+
+- **[Stasher API](https://github.com/stasher-dev/stasher-api)** – Cloudflare Worker backend
+- **[Stasher App](https://github.com/stasher-dev/stasher-app)** – Browser interface with bookmarklet
+
+## 🧠 Built for Me. Maybe for You Too.
+
+This started as a scratch-my-own-itch project.  
+Now it's a zero-trust, burn-after-read tool with full cryptographic supply chain verification.
+
+If that sounds like overkill — good. That's kind of the point.
 
