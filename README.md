@@ -2,7 +2,7 @@
 
 Share secrets from your terminal. One-time only. No accounts. No backend. No BS.
 
-##Why?
+## Why?
 
 I just wanted to share a password.  
 Not spin up a server. Not sign up for a "secure" web app.  
@@ -75,7 +75,7 @@ npx destash "uuid:key"
 # → Reveals the secret and deletes it forever
 ```
 
-## 🔐 Trust, But Actually Verify
+## Trust, But Actually Verify
 
 ```bash
 # Verify latest release
