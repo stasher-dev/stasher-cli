@@ -144,7 +144,7 @@ npx enstash "vault code: 1234#"
 # (Remind them: 10-minute expiry)
 ```
 
-## 🔍 How It Works
+## How It Works
 
 ### **Client-Side Encryption**
 
@@ -182,11 +182,28 @@ npm install -g stasher-cli
 
 …but honestly? `npx` is faster and cleaner.
 
+# Shell History Warning
+
+If you're entering secrets directly into the command line (e.g. npx enstash "my secret"), be aware that most shells will store this in your command history (e.g. .bash_history, .zsh_history).
+
+To avoid leaking secrets:
+
+# Temporarily disable history for this session
+unset HISTFILE
+set +o history
+
+# Safely run your command
+npx enstash "my secret"
+
+# Re-enable history if needed
+set -o history
+
 ## Roadmap
 
  Add `--json` output format for programmatic use  
  Support custom TTL (time-to-live) settings  
- Add `--verbose` flag for debugging  
+ Add `--verbose` flag for debugging 
+ Add `--stdin` flag for security 
  Web interface integration  
  Binary file support with base64 encoding  
 
