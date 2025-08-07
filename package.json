@@ -1,6 +1,6 @@
 {
   "name": "stasher-cli",
-  "version": "1.3.18",
+  "version": "1.3.19",
   "description": "Secure secret sharing CLI with burn-after-read",
   "bin": {
     "stasher": "./dist/index.js",
