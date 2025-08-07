@@ -60,7 +60,6 @@ This CLI features automated publishing via [stasher-ci](https://github.com/stash
 - **Build Pipeline**: TypeScript compilation, testing, and packaging
 - **Zero Downtime**: Instant availability through npm's global CDN
 
-**Build Status**: [![CI Pipeline](https://github.com/stasher-dev/stasher-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/stasher-dev/stasher-cli/actions/workflows/ci.yml) [![Release](https://github.com/stasher-dev/stasher-cli/actions/workflows/release.yml/badge.svg)](https://github.com/stasher-dev/stasher-cli/actions/workflows/release.yml)
 
 ### Install (If You Must)
 
@@ -72,23 +71,21 @@ But honestly? npx works great. Why clutter your global install?
 
 ## 🔐 Cryptographic Verification
 
-**All releases are signed with Cosign** using GitHub OIDC keyless signing and include **SLSA v1 provenance attestation**, all logged to the [Rekor transparency log](https://rekor.sigstore.dev).
+Every Stasher CLI release is **cryptographically signed** and includes complete supply chain security:
 
-### Verify npm Package
+✅ **Signed with Cosign** - GitHub OIDC keyless signing  
+✅ **SLSA v1 Attestation** - Complete build provenance metadata  
+✅ **SBOM Included** - Full dependency transparency with licenses  
+✅ **Rekor Logged** - Public transparency log for all signatures
+
+### Quick Verification
 
 ```bash
-# Install cosign (if you don't have it)
-# macOS: brew install cosign
-# Linux: see https://docs.sigstore.dev/cosign/installation/
-
-# Get the latest version
+# Verify latest release
 VERSION=$(npm view stasher-cli version)
-
-# Download package and signature
 npm pack stasher-cli@$VERSION
 curl -L -O "https://github.com/stasher-dev/stasher-cli/releases/download/v$VERSION/stasher-cli-$VERSION.tgz.sig"
 
-# Verify signature
 cosign verify-blob \
   --certificate-identity-regexp="https://github.com/stasher-dev/stasher-cli/.*" \
   --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
@@ -96,60 +93,13 @@ cosign verify-blob \
   stasher-cli-$VERSION.tgz
 ```
 
-### 🧾 Verify SLSA v1 Provenance Attestation
+### Complete Verification Guides
 
-```bash
-# Download the attestation
-curl -L -O "https://github.com/stasher-dev/stasher-cli/releases/download/v$VERSION/stasher-cli-$VERSION.tgz.intoto.jsonl"
-
-# Option 1: Verify with slsa-verifier (recommended)
-# Install: go install github.com/slsa-framework/slsa-verifier/v2/cli/slsa-verifier@latest
-slsa-verifier verify-artifact \
-  --provenance-path stasher-cli-$VERSION.tgz.intoto.jsonl \
-  --source-uri github.com/stasher-dev/stasher-cli \
-  --source-tag v$VERSION \
-  stasher-cli-$VERSION.tgz
-
-# Option 2: Manual inspection with cosign
-cosign verify-attestation \
-  --certificate-identity-regexp="https://github.com/stasher-dev/stasher-cli/.*" \
-  --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
-  --type=https://slsa.dev/provenance/v1 \
-  stasher-cli-$VERSION.tgz | jq .payload -r | base64 -d | jq
-```
-
-### Verify Checksums
-
-```bash
-# Download and verify checksums
-curl -L -O "https://github.com/stasher-dev/stasher-cli/releases/download/v$VERSION/checksums.txt"
-curl -L -O "https://github.com/stasher-dev/stasher-cli/releases/download/v$VERSION/checksums.txt.sig"
-
-# Verify checksums signature
-cosign verify-blob \
-  --certificate-identity-regexp="https://github.com/stasher-dev/stasher-cli/.*" \
-  --certificate-oidc-issuer=https://token.actions.githubusercontent.com \
-  --signature=checksums.txt.sig \
-  checksums.txt
-
-# Verify package integrity
-sha256sum -c checksums.txt
-```
-
-### 🏗️ What This Proves
-
-**✅ Source Integrity** - Built from verified GitHub repository  
-**✅ Build Authenticity** - Built by GitHub Actions with OIDC identity  
-**✅ Supply Chain Security** - Complete build environment captured in attestation  
-**✅ Provenance** - Traceable from source commit to release artifact  
-**✅ Transparency** - All signatures logged to public [Rekor](https://rekor.sigstore.dev) log  
-**✅ Non-repudiation** - Cryptographic proof of origin
-
-The SLSA attestation contains detailed metadata about:
-- **Source commit** and repository
-- **Build environment** (Node.js version, OS, dependencies)
-- **Build process** (exact commands, working directory)
-- **GitHub Actions context** (workflow, actor, run ID)
+- **[📖 Verification Overview](./docs/VERIFICATION.md)** - Complete verification guide
+- **[🔐 Cosign Signatures](./docs/cosign.md)** - Package signature verification
+- **[🧾 SLSA Attestation](./docs/slsa.md)** - Supply chain provenance  
+- **[📋 SBOM Verification](./docs/sbom.md)** - Dependency transparency
+- **[📜 Rekor Transparency](./docs/rekor.md)** - Public audit log
 
 **Don't trust, verify.** 🛡️
 
