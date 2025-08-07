@@ -1,4 +1,4 @@
-# 🛡️ Stasher CLI
+# Stasher CLI
 
 Share secrets from your terminal. One-time only. No accounts. No backend. No BS.
 
@@ -58,18 +58,11 @@ Everything that runs Stasher is open and verifiable:
 
 ** The only thing we don't expose? Your secret. Everything else is yours to inspect.**
 
-## Why You Might Actually Care
-
 **Zero-knowledge encryption** – AES-256-GCM, done locally
-
 **Burn-after-read** – one use, then it's gone forever
-
 **CLI-first** – pipe it, script it, automate it
-
 **No setup** – just run it with `npx`
-
  **10-minute expiry** – with proactive + reactive cleanup
-
 **Full supply chain transparency** – signed, attested, and public
 
 ## Try It Now
@@ -96,13 +89,13 @@ cosign verify-blob \
   "stasher-cli-$VERSION.tgz"
 ```
 
-**📚 More:**
+**More:**
 
-- **[📖 Verification Overview](./docs/verification.md)**
-- **[🔐 Cosign Signatures](./docs/cosign.md)**
-- **[🧾 SLSA Attestation](./docs/slsa.md)**
-- **[📋 SBOM Verification](./docs/sbom.md)**
-- **[📜 Rekor Transparency](./docs/rekor.md)**
+- **[Verification Overview](./docs/verification.md)**
+- **[Cosign Signatures](./docs/cosign.md)**
+- **[SLSA Attestation](./docs/slsa.md)**
+- **[SBOM Verification](./docs/sbom.md)**
+- **[Rekor Transparency](./docs/rekor.md)**
 
 ## 🛠 Usage
 
@@ -133,7 +126,7 @@ unstash "uuid"
 unstash "uuid:base64key"
 ```
 
-## 🧪 Examples
+## Examples
 
 ```bash
 # Share Wi-Fi password with a guest
@@ -146,14 +139,14 @@ npx enstash "OTP: 842991"
 echo "DEPLOY_KEY=super-secret" | npx enstash
 npx unstash "uuid"
 
-# Send a secret via pigeon 🐦
+# Send a secret via pigeon 
 npx enstash "vault code: 1234#"
 # (Remind them: 10-minute expiry)
 ```
 
 ## 🔍 How It Works
 
-### 🔐 **Client-Side Encryption**
+### **Client-Side Encryption**
 
 Stasher encrypts with **AES-256-GCM** before sending anything
 
@@ -161,7 +154,7 @@ It uploads: ciphertext, IV, and tag — **never the key**
 
 You get a `uuid:base64key` token to share
 
-### ⏱ **Hybrid Expiry System** 
+### **Hybrid Expiry System** 
 
 **Reactive expiry**: validated on every access  
 **Proactive cleanup**: background Durable Object alarms  
