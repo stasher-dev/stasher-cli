@@ -17,7 +17,7 @@ async function main(): Promise<void> {
         return runUnstash();
     }
     else {
-        console.error('Usage: Call this script as "enstash", "destash", or "unstash"');
+        console.error('You can use this utitility by using the "enstash", "destash", or "unstash commands"');
         process.exit(1);
     }
 }
