@@ -101,7 +101,7 @@ export function decrypt(payload: PayloadStructure, key: Buffer): string {
         throw new Error(`Invalid key length: must be ${KEY_LENGTH} bytes`);
     }
     
-    const decipher = createDecipheriv('aes-256-gcm', key, iv);
+    const decipher = createDecipheriv('aes-256-gcm', key, iv, { authTagLength: TAG_LENGTH });
     decipher.setAuthTag(tag);
     let decrypted = decipher.update(ciphertext);
     decrypted = Buffer.concat([decrypted, decipher.final()]);
