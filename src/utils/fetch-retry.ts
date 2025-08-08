@@ -40,14 +40,35 @@ export async function fetchWithRetry(
 ): Promise<Response> {
   
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    // Add abort signal for timeout handling
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
+    // Create per-attempt timeout controller
+    const timeoutController = new AbortController();
+    const timeout = setTimeout(() => timeoutController.abort(), FETCH_TIMEOUT);
+    
+    // Chain external signal with timeout signal
+    const externalSignal = options.signal;
+    let combinedSignal = timeoutController.signal;
+    
+    if (externalSignal) {
+      // If external signal is already aborted, respect it immediately
+      if (externalSignal.aborted) {
+        clearTimeout(timeout);
+        throw new DOMException('Request was aborted', 'AbortError');
+      }
+      
+      // Create combined controller that responds to both signals
+      const combinedController = new AbortController();
+      
+      const abortBoth = () => combinedController.abort();
+      externalSignal.addEventListener('abort', abortBoth, { once: true });
+      timeoutController.signal.addEventListener('abort', abortBoth, { once: true });
+      
+      combinedSignal = combinedController.signal;
+    }
     
     try {
       const response = await fetch(url, { 
         ...options, 
-        signal: controller.signal 
+        signal: combinedSignal 
       });
       
       // Retry on HTTP 5xx server errors

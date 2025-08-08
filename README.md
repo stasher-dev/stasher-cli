@@ -31,3 +31,9 @@ cat file.txt | enstash
 
 # From stdin with npx
 echo "secret" | npx enstash
+
+```
+
+## Road Map
+
+[] Add AAD to request /enstash and /destash

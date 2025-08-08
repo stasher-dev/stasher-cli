@@ -2,16 +2,26 @@ import { Command } from 'commander';
 import { loadEnvConfig } from '../utils/config';
 import { extractUUID, validateUUID } from '../utils/validation';
 
-function exitWithMessage(msg: string): never {
+/**
+ * Exit codes for CI/script automation:
+ * 0 = success
+ * 1 = general error
+ * 2 = invalid input format 
+ * 3 = stash not found
+ * 4 = stash expired or already consumed
+ * 5 = network/timeout error
+ * 6 = decryption/authentication failure
+ */
+function exitWithMessage(msg: string, exitCode: number = 1): never {
   console.error(msg);
-  process.exit(1);
+  process.exit(exitCode);
 }
 
 export async function runUnstash(): Promise<void> {
   const program = new Command();
 
   program
-    .name('stashed')
+    .name('stasher')
     .description('Manually delete a one-time secret before it’s accessed')
     .usage('<uuid[:key]>')
     .argument('<token>', 'Stash uuid or full token in the format uuid:base64key')
@@ -26,13 +36,13 @@ export async function runUnstash(): Promise<void> {
   const rawInput = program.args[0];
 
   if (!rawInput) {
-    exitWithMessage('No stash token or uuid provided.');
+    exitWithMessage('No stash token or uuid provided.', 2); // Invalid input
   }
 
   // Allow either full token or just the UUID
   const uuid = extractUUID(rawInput);
   if (!uuid || !validateUUID(uuid)) {
-    exitWithMessage('Invalid format. Expected uuid or stash token');
+    exitWithMessage('Invalid format. Expected uuid or stash token', 2); // Invalid input
   }
 
   try {
@@ -41,32 +51,44 @@ export async function runUnstash(): Promise<void> {
     // Use fetch with retry for network resilience
     const { fetchWithRetry } = await import('../utils/fetch-retry');
     
+    // Time-bound the request to prevent hanging
+    const ac = new AbortController();
+    const timeout = setTimeout(() => ac.abort(), 10_000); // 10s
     const response = await fetchWithRetry(`${config.apiBaseUrl}/unstash/${uuid}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      signal: ac.signal,
     });
+    clearTimeout(timeout);
 
     if (response.status === 404) {
-      exitWithMessage('Stash not found or already deleted.');
+      exitWithMessage('Stash not found or already deleted.', 3); // Not found
     }
 
     if (response.status === 410) {
-      const errorData = await response.json();
-      const errorMessage = errorData.error === 'Expired' 
-        ? 'This stash has expired' 
-        : 'This stash has already been consumed';
-      exitWithMessage(errorMessage);
+      const { error } = await response.json().catch(() => ({}));
+      const msg = (error === 'Expired') ? 'This stash has expired.' : 'This stash has already been consumed.';
+      exitWithMessage(msg, 4); // Expired/consumed
     }
 
     if (!response.ok) {
-      exitWithMessage(`Failed to delete stash: HTTP ${response.status}`);
+      exitWithMessage(`Failed to delete stash: HTTP ${response.status}`, 5); // Network error
     }
 
-    const result = await response.json();
-    console.log(`Stash ${result.id} has been permanently deleted.`);
-
-    process.exit(0);
+    // Guard JSON parsing - don't crash if server returns HTML on errors
+    let result;
+    try {
+      result = await response.json();
+    } catch (e) {
+      exitWithMessage('Server returned invalid response format.', 5); // Network error
+    }
+    
+    process.stdout.write(`Stash ${result.id} has been permanently deleted.\n`);
 
   } catch (error: any) {
-    exitWithMessage('Failed to delete stash. Please try again.');
+    // Handle network/timeout errors
+    if (error?.name === 'AbortError') {
+      exitWithMessage('Request timed out after 10 seconds.', 5); // Network error
+    }
+    exitWithMessage('Failed to delete stash. Please try again.', 5); // Network error (general)
   }
 }

@@ -17,7 +17,7 @@ async function main(): Promise<void> {
         return runUnstash();
     }
     else {
-        console.error('Thus utitility can be used with the following commands "enstash", "destash", or "unstash commands"');
+        console.error('This utitility can be used with the following commands "enstash", "destash", or "unstash commands"');
         process.exit(1);
     }
 }
